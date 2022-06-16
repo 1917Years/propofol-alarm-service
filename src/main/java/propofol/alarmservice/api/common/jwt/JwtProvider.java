@@ -51,4 +51,10 @@ public class JwtProvider {
 
         return new UsernamePasswordAuthenticationToken(principal, "", at);
     }
+
+    public String getMemberId(String token) {
+        JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
+        Claims claims = jwtParser.parseClaimsJws(token).getBody();
+        return claims.getSubject();
+    }
 }

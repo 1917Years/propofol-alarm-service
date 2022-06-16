@@ -25,12 +25,14 @@ public class PreFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        String authorization = request.getHeader("Authorization");
+        if(!request.getRequestURI().startsWith("/api/v1/subscribe")) {
+            String authorization = request.getHeader("Authorization");
 
-        if(authorization != null && authorization.startsWith("Bearer ")){
-            String token = authorization.replace("Bearer ", "");
-            Authentication authentication = jwtProvider.getUserInfo(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (authorization != null && authorization.startsWith("Bearer ")) {
+                String token = authorization.replace("Bearer ", "");
+                Authentication authentication = jwtProvider.getUserInfo(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
 
         filterChain.doFilter(request, response);
